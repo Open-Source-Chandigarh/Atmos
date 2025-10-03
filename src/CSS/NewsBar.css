@@ -1,0 +1,246 @@
+.newsbar-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1e2e 0%, #2d1b4e 50%, #1e1e2e 100%);
+  padding: 40px 20px 80px;
+}
+
+.newsbar-header {
+  max-width: 1400px;
+  margin: 0 auto 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .newsbar-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.newsbar-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.newsbar-icon {
+  font-size: 48px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.newsbar-title {
+  font-size: 42px;
+  font-weight: 900;
+  color: white;
+  margin: 0;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .newsbar-title {
+    font-size: 32px;
+  }
+  
+  .newsbar-icon {
+    font-size: 36px;
+  }
+}
+
+.newsbar-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat-badge {
+  padding: 10px 20px;
+  background: rgba(102, 126, 234, 0.2);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.newsbar-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 25px;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.newsbar-loading p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.newsbar-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .newsbar-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.no-articles {
+  max-width: 500px;
+  margin: 100px auto;
+  text-align: center;
+  padding: 60px 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.no-articles-icon {
+  font-size: 80px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.no-articles h3 {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.no-articles p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  margin: 0;
+}
+
+.newsbar-pagination {
+  max-width: 1400px;
+  margin: 60px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+}
+
+.pagination-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.page-number {
+  font-size: 24px;
+  font-weight: 900;
+  color: white;
+}
+
+.page-separator {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.page-total {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .newsbar-pagination {
+    gap: 15px;
+  }
+  
+  .pagination-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .pagination-btn span:last-child {
+    display: none;
+  }
+  
+  .prev-btn span:first-child,
+  .next-btn span:first-child {
+    font-size: 20px;
+  }
+}
