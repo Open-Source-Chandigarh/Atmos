@@ -7,7 +7,7 @@ const FeaturedNews = () => {
   const [loading, setLoading] = useState(true);
   const country = useSelector((state) => state.country);
 
-  const API_KEY = import.meta.env.REACT_APP_NEWS_API_KEY || "87773584f23d40a29795e17bccdfe61b";
+  const API_KEY = import.meta.env.REACT_APP_NEWS_API_KEY;
   const categories = ["technology", "business", "sports", "health", "science", "entertainment"];
 
   const fetchNews = async () => {
