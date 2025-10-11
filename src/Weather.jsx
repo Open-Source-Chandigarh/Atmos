@@ -8,7 +8,7 @@ const Weather = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const WEATHER_API_KEY = import.meta.env.REACT_APP_WEATHER_API_KEY;
+  const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
   const fetchWeather = async (searchCity = city) => {
     setLoading(true);
