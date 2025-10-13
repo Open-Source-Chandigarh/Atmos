@@ -72,8 +72,8 @@ Before you begin, ensure you have:
    
    Create a `.env` file in the root directory:
    ```env
-   REACT_APP_NEWS_API_KEY=your_news_api_key_here
-   REACT_APP_WEATHER_API_KEY=your_weather_api_key_here
+   VITE_NEWS_API_KEY=your_news_api_key_here
+   VITE_WEATHER_API_KEY=your_weather_api_key_here
    ```
 
 4. **Get your API keys**
@@ -187,10 +187,10 @@ Create a `.env` file in the root directory:
 
 ```env
 # News API Key
-REACT_APP_NEWS_API_KEY=your_news_api_key_here
+VITE_NEWS_API_KEY=your_news_api_key_here
 
 # Weather API Key
-REACT_APP_WEATHER_API_KEY=your_weather_api_key_here
+VITE_WEATHER_API_KEY=your_weather_api_key_here
 ```
 
 ⚠️ **Important:** Never commit your `.env` file to Git. It's already in `.gitignore`.
@@ -206,8 +206,8 @@ REACT_APP_WEATHER_API_KEY=your_weather_api_key_here
 3. Click "New Project"
 4. Import your repository
 5. Add environment variables:
-   - `REACT_APP_NEWS_API_KEY`
-   - `REACT_APP_WEATHER_API_KEY`
+   - `VITE_NEWS_API_KEY`
+   - `VITE_WEATHER_API_KEY`
 6. Click "Deploy"
 
 Your app will be live in ~2 minutes!
