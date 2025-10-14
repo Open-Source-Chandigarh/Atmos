@@ -17,10 +17,21 @@ const Weather = () => {
     try {
       const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${searchCity}&limit=1&appid=${WEATHER_API_KEY}`;
       const geoResponse = await fetch(geoUrl);
+      
+      if (!geoResponse.ok) {
+        if (geoResponse.status === 429) {
+          setError("API rate limit exceeded. Please try again later.");
+        } else {
+          setError(`Error ${geoResponse.status}: ${geoResponse.statusText}`);
+        }
+        setLoading(false);
+        return;
+      }
+      
       const geoData = await geoResponse.json();
 
       if (!geoData || geoData.length === 0) {
-        setError("City not found. Please try again.");
+        setError("City not found. Please check the spelling and try again.");
         setLoading(false);
         return;
       }
@@ -28,12 +39,40 @@ const Weather = () => {
       const { lat, lon } = geoData[0];
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${WEATHER_API_KEY}`;
       const weatherResponse = await fetch(weatherUrl);
+      
+      if (!weatherResponse.ok) {
+        if (weatherResponse.status === 429) {
+          setError("API rate limit exceeded. Please try again later.");
+        } else {
+          setError(`Error ${weatherResponse.status}: ${weatherResponse.statusText}`);
+        }
+        setLoading(false);
+        return;
+      }
+      
       const weather = await weatherResponse.json();
+      
+      if (weather.cod && weather.cod !== 200) {
+        setError(weather.message || "Failed to fetch weather data");
+        setLoading(false);
+        return;
+      }
       
       setWeatherData(weather);
       setCity(searchCity);
+      
+      // Cache the successful result
+      try {
+        localStorage.setItem('lastWeatherData', JSON.stringify({
+          data: weather,
+          city: searchCity,
+          timestamp: Date.now()
+        }));
+      } catch (e) {
+        console.warn('Failed to cache weather data:', e);
+      }
     } catch (err) {
-      setError("Failed to fetch weather data");
+      setError("Failed to fetch weather data. Please check your internet connection.");
       console.error("Weather error:", err);
     }
     
@@ -41,6 +80,25 @@ const Weather = () => {
   };
 
   useEffect(() => {
+    // Try to load cached weather data first
+    try {
+      const cached = localStorage.getItem('lastWeatherData');
+      if (cached) {
+        const { data, city: cachedCity, timestamp } = JSON.parse(cached);
+        const age = Date.now() - timestamp;
+        
+        // Use cached data if it's less than 30 minutes old
+        if (age < 30 * 60 * 1000) {
+          setWeatherData(data);
+          setCity(cachedCity);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load cached weather data:', e);
+    }
+    
+    // Fetch fresh data if no valid cache exists
     fetchWeather();
   }, []);
 
