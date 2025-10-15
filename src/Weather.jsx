@@ -14,7 +14,7 @@ const Weather = () => {
   const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
   const UNITS = 'metric';
 
-  // Fetch current weather
+  // Fetch current weather 
   const fetchCurrentWeather = async (cityName) => {
     const url = `${CURRENT_URL}?q=${cityName}&appid=${API_KEY}&units=${UNITS}`;
     const response = await fetch(url);
