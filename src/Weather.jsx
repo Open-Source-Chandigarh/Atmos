@@ -8,102 +8,13 @@ const Weather = () => {
   const [error, setError] = useState(null);
   const [city, setCity] = useState('London');
   const [showForecast, setShowForecast] = useState(true);
-  const [apiKeyStatus, setApiKeyStatus] = useState('checking');
 
   const API_KEY = import.meta.env.VITE_APP_WEATHER_API_KEY;
   const CURRENT_URL = 'https://api.openweathermap.org/data/2.5/weather';
   const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
   const UNITS = 'metric';
 
-  
-  const getDemoWeatherData = () => ({
-    name: "London",
-    sys: { country: "GB" },
-    main: {
-      temp: 15,
-      feels_like: 13,
-      humidity: 72,
-      pressure: 1013
-    },
-    weather: [{
-      main: "Clouds",
-      description: "scattered clouds",
-      icon: "03d"
-    }],
-    wind: { speed: 3.5 },
-    visibility: 10000
-  });
-
-  const getDemoForecastData = () => {
-    const today = new Date();
-    return Array.from({ length: 5 }, (_, index) => {
-      const date = new Date(today);
-      date.setDate(date.getDate() + index);
-      
-      const conditions = ['Clear', 'Clouds', 'Rain', 'Snow', 'Mist'];
-      const icons = ['01d', '03d', '10d', '13d', '50d'];
-      const descriptions = ['clear sky', 'scattered clouds', 'light rain', 'light snow', 'mist'];
-      
-      const conditionIndex = index % conditions.length;
-      
-      return {
-        date: date,
-        maxTemp: 15 + Math.floor(Math.random() * 10),
-        minTemp: 8 + Math.floor(Math.random() * 5),
-        condition: conditions[conditionIndex],
-        description: descriptions[conditionIndex],
-        icon: icons[conditionIndex]
-      };
-    });
-  };
-
-   
-  const testApiKey = async () => {
-    if (!API_KEY) {
-      console.error('No API key found');
-      return { valid: false, error: 'No API key configured' };
-    }
-
-    console.log('Testing API key:', API_KEY.substring(0, 8) + '...');
-    
-    try {
-      const testUrl = `${CURRENT_URL}?q=London&appid=${API_KEY}&units=${UNITS}`;
-      console.log('Test URL:', testUrl);
-      
-      const response = await fetch(testUrl);
-      const data = await response.json();
-      
-      console.log('API Response Status:', response.status);
-      console.log('API Response Data:', data);
-      
-      if (response.status === 401) {
-        return { 
-          valid: false, 
-          error: 'API key not activated yet. New keys take up to 2 hours to activate.' 
-        };
-      } else if (response.status === 429) {
-        return { 
-          valid: false, 
-          error: 'API rate limit exceeded. Please try again later.' 
-        };
-      } else if (!response.ok) {
-        return { 
-          valid: false, 
-          error: `API error: ${data.message || 'Unknown error'}` 
-        };
-      }
-      
-      return { valid: true, data };
-    } catch (error) {
-      console.error('API test error:', error);
-      return { 
-        valid: false, 
-        error: `Network error: ${error.message}` 
-      };
-    }
-  };
-
- 
+  // Fetch current weather
   const fetchCurrentWeather = async (cityName) => {
     const url = `${CURRENT_URL}?q=${cityName}&appid=${API_KEY}&units=${UNITS}`;
     const response = await fetch(url);
@@ -117,7 +28,7 @@ const Weather = () => {
     setCurrentWeather(data);
   };
 
- 
+  // Fetch 5-day forecast
   const fetchForecast = async (cityName) => {
     const url = `${FORECAST_URL}?q=${cityName}&appid=${API_KEY}&units=${UNITS}`;
     const response = await fetch(url);
@@ -131,7 +42,8 @@ const Weather = () => {
     const dailyForecasts = processForecastData(data.list);
     setForecast(dailyForecasts);
   };
- 
+
+  // Process forecast data
   const processForecastData = (forecastList) => {
     const dailyData = {};
     
@@ -193,55 +105,40 @@ const Weather = () => {
   const handleCityChange = (e) => {
     if (e.key === 'Enter') {
       const newCity = e.target.value.trim();
-      if (newCity && apiKeyStatus === 'valid') {
+      if (newCity) {
         setCity(newCity);
         setLoading(true);
         setError(null);
         e.target.value = '';
-      } else if (apiKeyStatus !== 'valid') {
-        alert('API key not ready yet. Using demo data.');
       }
     }
   };
 
-  
+  // Fetch weather data
   useEffect(() => {
-    const initializeWeather = async () => {
+    const fetchWeatherData = async () => {
       setLoading(true);
       setError(null);
       
-       
-      const keyTest = await testApiKey();
-      
-      if (keyTest.valid) {
-        console.log('✅ API key is valid');
-        setApiKeyStatus('valid');
-        
-        try {
-          await Promise.all([
-            fetchCurrentWeather(city),
-            fetchForecast(city)
-          ]);
-          console.log('✅ Weather data loaded successfully');
-        } catch (error) {
-          console.error('❌ Failed to fetch weather data:', error);
-          setError(error.message);
-        }
-      } else {
-        console.warn('⚠️ API key not ready:', keyTest.error);
-        setApiKeyStatus('invalid');
-        
-   
-        setCurrentWeather(getDemoWeatherData());
-        setForecast(getDemoForecastData());
-        
-        setError(`Using demo data: ${keyTest.error}`);
+      if (!API_KEY) {
+        setError('Weather API key not found. Please check your .env file.');
+        setLoading(false);
+        return;
       }
-      
-      setLoading(false);
+
+      try {
+        await Promise.all([
+          fetchCurrentWeather(city),
+          fetchForecast(city)
+        ]);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch weather data');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    initializeWeather();
+    fetchWeatherData();
   }, [city, API_KEY]);
 
   if (loading) {
@@ -250,7 +147,18 @@ const Weather = () => {
         <div className="weather-loading">
           <div className="loading-spinner"></div>
           <p>Loading weather data...</p>
-          <small>Testing API key and fetching data for {city}...</small>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="weather-container">
+        <div className="weather-error">
+          <h3>Weather Unavailable</h3>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>Try Again</button>
         </div>
       </div>
     );
@@ -258,32 +166,13 @@ const Weather = () => {
 
   return (
     <div className="weather-container">
-    
-      {apiKeyStatus === 'invalid' && (
-        <div className="api-status-notice">
-          <p>⚠️ <strong>Demo Mode Active</strong></p>
-          <p>Your API key is not ready yet. New OpenWeatherMap keys take up to 2 hours to activate.</p>
-          <p>Currently showing sample data. Your app will automatically switch to live data once the API key is active.</p>
-          <button onClick={() => window.location.reload()} className="retry-btn">
-            Test API Key Again
-          </button>
-        </div>
-      )}
-
-      
-
-    
+      {/* Search Bar */}
       <div className="weather-search">
         <input
           type="text"
-          placeholder={
-            apiKeyStatus === 'valid' 
-              ? "Enter city name and press Enter" 
-              : "Demo mode - search disabled until API key activates"
-          }
+          placeholder="Enter city name and press Enter"
           onKeyPress={handleCityChange}
           className="city-input"
-          disabled={apiKeyStatus !== 'valid'}
         />
       </div>
 
