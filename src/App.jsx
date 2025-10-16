@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import { ReactLenis, useLenis } from "lenis/react";
+import "lenis/dist/lenis.css";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Header";
 import NewsBar from "./NewsBar";
@@ -7,9 +10,59 @@ import HomePage from "./HomePage";
 import "./App.css";
 import Footer from "./Footer";
 
+
+//============================================================================
+// LenisProvider: Wraps the app and enables smooth scrolling
+//============================================================================
+function LenisProvider({ children }) {
+  const lenisRef = useRef(null);
+
+  useEffect(() => {
+    function raf(time) {
+      lenisRef.current?.lenis?.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  }, []);
+
+  return (
+    <ReactLenis
+      root
+      options={{
+        duration: 0.8,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+      }}
+      ref={lenisRef}
+    >
+      {children}
+    </ReactLenis>
+  );
+}
+
+//============================================================================
+// Scroll helper for navigation links
+//============================================================================
+export function useScrollTo() {
+  const lenis = useLenis();
+
+  const scrollTo = (id) => {
+    lenis?.scrollTo(`#${id}`, {
+      offset: -80,
+      duration: 0.8,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+  };
+
+  return scrollTo;
+}
+
+
+
 function App() {
   return (
     <Router>
+      <LenisProvider>
       <div className="app-container">
         <Header />
         <Routes>
@@ -25,6 +78,7 @@ function App() {
         </Routes>
         <Footer />
       </div>
+      </LenisProvider>
     </Router>
   );
 }
