@@ -10,7 +10,7 @@ export default function NewsBar(props) {
   const [loading, setLoading] = useState(true);
   const country = useSelector((state) => state.country);
 
-  const API_KEY = import.meta.env.REACT_APP_NEWS_API_KEY;
+  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
   const pageSize = 12;
 
   const fetchNews = async (pageNumber = page) => {
