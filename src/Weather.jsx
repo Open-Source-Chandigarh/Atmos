@@ -9,7 +9,7 @@ const Weather = () => {
   const [city, setCity] = useState('London');
   const [showForecast, setShowForecast] = useState(true);
 
-  const API_KEY = import.meta.env.VITE_APP_WEATHER_API_KEY;
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
   const CURRENT_URL = 'https://api.openweathermap.org/data/2.5/weather';
   const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
   const UNITS = 'metric';
