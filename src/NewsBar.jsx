@@ -10,13 +10,13 @@ export default function NewsBar(props) {
   const [loading, setLoading] = useState(true);
   const country = useSelector((state) => state.country);
 
-  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://your-backend-url.com';
   const pageSize = 12;
 
   const fetchNews = async (pageNumber = page) => {
     setLoading(true);
     try {
-      const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${props.category}&apiKey=${API_KEY}&pageSize=${pageSize}&page=${pageNumber}`;
+      const url = `${BACKEND_URL}/api/news?country=${country}&category=${props.category}&pageSize=${pageSize}&page=${pageNumber}`;
       const response = await fetch(url);
       const data = await response.json();
       

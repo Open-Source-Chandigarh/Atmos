@@ -9,14 +9,14 @@ const Weather = () => {
   const [city, setCity] = useState('London');
   const [showForecast, setShowForecast] = useState(true);
 
-  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-  const CURRENT_URL = 'https://api.openweathermap.org/data/2.5/weather';
-  const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+  const CURRENT_URL = `${BACKEND_URL}/api/weather`;
+  const FORECAST_URL = `${BACKEND_URL}/api/forecast`;
   const UNITS = 'metric';
 
   // Fetch current weather 
   const fetchCurrentWeather = async (cityName) => {
-    const url = `${CURRENT_URL}?q=${cityName}&appid=${API_KEY}&units=${UNITS}`;
+    const url = `${CURRENT_URL}?city=${cityName}`;
     const response = await fetch(url);
     
     if (!response.ok) {
@@ -27,10 +27,9 @@ const Weather = () => {
     const data = await response.json();
     setCurrentWeather(data);
   };
-
   // Fetch 5-day forecast
   const fetchForecast = async (cityName) => {
-    const url = `${FORECAST_URL}?q=${cityName}&appid=${API_KEY}&units=${UNITS}`;
+    const url = `${FORECAST_URL}?city=${cityName}`;
     const response = await fetch(url);
     
     if (!response.ok) {
@@ -120,8 +119,8 @@ const Weather = () => {
       setLoading(true);
       setError(null);
       
-      if (!API_KEY) {
-        setError('Weather API key not found. Please check your .env file.');
+      if (!BACKEND_URL) {
+        setError('Backend URL not configured. Please check your .env file.');
         setLoading(false);
         return;
       }
@@ -139,7 +138,7 @@ const Weather = () => {
     };
 
     fetchWeatherData();
-  }, [city, API_KEY]);
+  }, [city, BACKEND_URL]);
 
   if (loading) {
     return (

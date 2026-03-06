@@ -7,14 +7,14 @@ const FeaturedNews = () => {
   const [loading, setLoading] = useState(true);
   const country = useSelector((state) => state.country);
 
-  const API_KEY = import.meta.env.VITE_NEWS_API_KEY
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://your-backend-url.com';
   const categories = ["technology", "business", "sports", "health", "science", "entertainment"];
 
   const fetchNews = async () => {
     setLoading(true);
     try {
       const promises = categories.map(async (category) => {
-        const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&pageSize=1&apiKey=${API_KEY}`;
+        const url = `${BACKEND_URL}/api/news?country=${country}&category=${category}&pageSize=1`;
         const response = await fetch(url);
         const data = await response.json();
         return data.articles?.[0] || null;

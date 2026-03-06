@@ -8,12 +8,12 @@ const HomepageNews = () => {
   const country = useSelector((state) => state.country);
    
   
-  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://your-backend-url.com';
 
   const getNews = async () => {
     setLoading(true);
     try {
-      const url = `https://newsapi.org/v2/top-headlines?country=${country}&pageSize=3&apiKey=${API_KEY}`;
+      const url = `${BACKEND_URL}/api/news?country=${country}&pageSize=3`;
       const response = await fetch(url);
       const data = await response.json();
       setArticles(data.articles || []);
