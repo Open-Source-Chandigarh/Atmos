@@ -5,13 +5,17 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 const app = express();
-const PORT = process.env.PORT ||5000
+const PORT = process.env.PORT || 5000;
 
-// Enable CORS
-app.use(cors());
+// Enable CORS with explicit configuration
+app.use(cors({
+  origin: '*', // Allow all origins (restrict in production)
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
 
-const NEWS_API_KEY = process.env.VITE_NEWS_API_KEY || process.env.NEWS_API_KEY;
-const WEATHER_API_KEY = process.env.VITE_WEATHER_API_KEY || process.env.WEATHER_API_KEY;
+const NEWS_API_KEY = process.env.VITE_NEWS_API_KEY;
+const WEATHER_API_KEY = process.env.VITE_WEATHER_API_KEY;
 
 // Log to verify keys are loaded (remove in production)
 console.log('Environment Variables Loaded:');
